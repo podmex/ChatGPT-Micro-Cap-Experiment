@@ -1,7 +1,7 @@
 {
-	"name": "clixy/core",
-	"description": "Clixy CMS Database Models and Migrations",
-	"keywords": ["laravel", "clixy", "cms", "core"],
+	"name": "clixy/admin",
+	"description": "Clixy CMS Admin",
+	"keywords": ["laravel", "clixy", "cms", "admin"],
 	"license": "MIT",
 	"authors": [
 		{
