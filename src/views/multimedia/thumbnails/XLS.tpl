@@ -1,0 +1,1 @@
+<img src="{$base_url}{$media_conf->base_dir}/thumb/xls_85x64.png" alt="{$title}" />

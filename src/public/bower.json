@@ -1,0 +1,10 @@
+{
+	"name": "clixy-admin-libs",
+	"dependencies": {
+		"foundation-sites": "^6.2.3",
+		"foundation-datepicker": "^1.5.3",
+		"foundation-icon-fonts": "*",
+		"modernizr-min": "^3.2.0",
+		"ckeditor": "^4.5.10"
+	}
+}

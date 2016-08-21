@@ -1,0 +1,1 @@
+<img src="{"wmv"|str_replace:"png":$image}" alt="{$title}" />

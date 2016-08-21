@@ -1,0 +1,27 @@
+{
+	"name": "clixy/core",
+	"description": "Clixy CMS Database Models and Migrations",
+	"keywords": ["laravel", "clixy", "cms", "core"],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Ivan Popjelev",
+			"email": "hellmare@gmail.com"
+		},
+		{
+			"name": "Marian Bida",
+			"email": "marian.bida@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=5.6.0",
+		"laravel/framework": "5.2.*",
+		"laravelcollective/html": "5.2.*",
+		"clixy/core": "1.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Clixy\\Admin\\": "src/"
+		}
+	}
+}
