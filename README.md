@@ -23,7 +23,7 @@ Once this operation is complete, simply add the service provider to your project
 
 ### Service Provider
 ```php
-Clixy\Provider\AdminServiceProvider::class
+Clixy\Admin\Providers\AdminServiceProvider::class
 ```
 
 ### Migrations, Seeds and Files
