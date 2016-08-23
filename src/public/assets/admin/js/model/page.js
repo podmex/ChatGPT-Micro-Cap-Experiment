@@ -1,6 +1,9 @@
-function NewsletterModel()
+function PageModel()
 {
+    var handle = this;
+    var self = this;
     var token = Conf.token;
+
     var id;
 
     var lang = {
@@ -12,17 +15,19 @@ function NewsletterModel()
         }
     };
 
-    var controller = "newsletter";
+    var controller = "page";
     
     this.speed = 500;
     this.current_item = '';
     this.edit_hold = $('#' + controller + '_edit_hold');
     this.page = 0;
-    var gate = "/";
+    var busy = false;
+    var gate = Conf.gate;
+    var mode = 'slide';//page,banner
 
     // public state handler
     var log = function (msg, s) {
-        // alert(msg);
+        alert(msg);
         // state_obj.log(controller + "_out", msg, s);
     };
 
@@ -67,10 +72,12 @@ function NewsletterModel()
         var id = Number(e.type === "click" ? $(this).attr('data-id') : e);
         $.post(gate + controller + '/get', {id: id, _token: token}, function (data) {
             $("#" + controller + "-wrap").html(data.content).foundation();
+			CKEDITOR.replaceAll('ckeditor');
+            // tinyMCE_obj.add(controller, 6, id);
+            // Tabs.init('normal');
             $("#" + controller + "-edit-form").on('submit', save);
             $("#" + controller + "-edit-form button[data-action=cancel]").on('click', cancel);
-            CKEDITOR.replaceAll('ckeditor');
-        }, "json");
+	}, "json");
         $("#" + controller + "-menu-wrap").hide();
     };
 
@@ -81,15 +88,13 @@ function NewsletterModel()
      */
     var save = function (e) {
         e.preventDefault();
-        updateCKEditor();
+	updateCKEditor();
         var obj = {_token: token};
         var o = $(this).serializeArray();
         for (var i in o) {
             obj[o[i].name] = o[i].value;
         }
-        $.post(gate + controller + "/save", obj, function () {
-            list();
-        }, "json");
+        $.post(gate + controller + "/save", obj, list, "json");
     };
 
     var remove = function (e) {
@@ -98,7 +103,7 @@ function NewsletterModel()
             $.post(gate + controller + "/remove", {id: id, _token: token}, function (data) {
                 token = data.token;
                 if (data.state) {
-                    // log(data.msg, 2);
+                    log(data.msg, 2);
                     list();
                 }
             }, "json");
@@ -121,6 +126,8 @@ function NewsletterModel()
     };
 
     var add = function (o) {
+        // cleanTinyMCE();
+        // $(".s_module_settings_buttons").hide();
         $.post(gate + controller + '/create', {_token: token}, function (data) {
             token = data.token;
             edit(data.id);
@@ -133,10 +140,28 @@ function NewsletterModel()
         });
     };
 
+    /**
+     * init language model, get index list, get list and attach actions
+     * @return void
+     */
+    list();
+
+    //live
     $("#" + controller + "list").on("click", list);
     $("a[data-action='create']").on("click", add);
     
-    list();
+    $('#slide_add_cancel').on("click", function () {
+        cleanTinyMCE();
+        $("#slide-list").empty();
+        list();
+    }
+    );
+    $('#slide_edit_cancel, #slide_close').on("click", function () {
+        cleanTinyMCE();
+        $("#slide_wrap").empty();
+        list();
+        $("#slide-menu-wrap").show();
+    });
+    $("#slide_list .s_button_edit").on("click", edit);
 }
-
-var newsletter_obj = new NewsletterModel();
+var page_obj = new PageModel();

@@ -11,81 +11,108 @@
 |
 */
 
-Route::group(['middleware' => ['web']], function () {
-	Route::get('login',		'\Clixy\Admin\Controllers\Auth\AuthController@getLogin');
-	Route::post('login',		'\Clixy\Admin\Controllers\Auth\AuthController@postLogin');
-	Route::get('logout',		'\Clixy\Admin\Controllers\Auth\AuthController@logout');
+Route::group(['prefix' => config('clixy.admin.prefix'), 'middleware' => ['admin']], function () {
+	
+	$c = '\Clixy\Admin\Controllers\Auth\AuthController';
+	Route::get('login',   $c . '@getLogin');
+	Route::post('login',	  $c . '@postLogin');
+	Route::get('logout',	  $c . '@logout');
 
-	Route::group(['middleware' => array('auth')], function() {
+	Route::group(['middleware' => array('auth.admin')], function() {
 
-		Route::get('/', '\Clixy\Admin\Controllers\HomeController@index');
+		$c = '\Clixy\Admin\Controllers\HomeController';
+		Route::get('/', $c . '@index');
 
 		// user
-		Route::get('user',          '\Clixy\Admin\Controllers\UserController@index');
-		Route::post('user/list',    '\Clixy\Admin\Controllers\UserController@postList');
-		Route::post('user/get',     '\Clixy\Admin\Controllers\UserController@postGet');
-		Route::post('user/create',  '\Clixy\Admin\Controllers\UserController@postCreate');
-		Route::post('user/remove',  '\Clixy\Admin\Controllers\UserController@postRemove');
-		Route::post('user/save',    '\Clixy\Admin\Controllers\UserController@postSave');
+		Route::group(['prefix' => 'user'], function () {
+			$c = '\Clixy\Admin\Controllers\UserController';
+			Route::get('/',        $c . '@index');
+			Route::post('list',    $c . '@postList');
+			Route::post('get',     $c . '@postGet');
+			Route::post('create',  $c . '@postCreate');
+			Route::post('remove',  $c . '@postRemove');
+			Route::post('save',    $c . '@postSave');
+		});
 
 		// conf
-		Route::get('conf',          '\Clixy\Admin\Controllers\ConfController@index');
-		Route::post('conf/list',    '\Clixy\Admin\Controllers\ConfController@postList');
-		Route::post('conf/get',     '\Clixy\Admin\Controllers\ConfController@postGet');
-		Route::post('conf/create',  '\Clixy\Admin\Controllers\ConfController@postCreate');
-		Route::post('conf/remove',  '\Clixy\Admin\Controllers\ConfController@postRemove');
-		Route::post('conf/save',    '\Clixy\Admin\Controllers\ConfController@postSave');
+		Route::group(['prefix' => 'conf'], function () {
+			$c = '\Clixy\Admin\Controllers\ConfController';
+			Route::get('/',        $c . '@index');
+			Route::post('list',    $c . '@postList');
+			Route::post('get',     $c . '@postGet');
+			Route::post('create',  $c . '@postCreate');
+			Route::post('remove',  $c . '@postRemove');
+			Route::post('save',    $c . '@postSave');
+		});
 
 		// page
-		Route::get('page',          '\Clixy\Admin\Controllers\PageController@index');
-		Route::post('page/list',    '\Clixy\Admin\Controllers\PageController@postList');
-		Route::post('page/get',     '\Clixy\Admin\Controllers\PageController@postGet');
-		Route::post('page/create',  '\Clixy\Admin\Controllers\PageController@postCreate');
-		Route::post('page/remove',  '\Clixy\Admin\Controllers\PageController@postRemove');
-		Route::post('page/save',    '\Clixy\Admin\Controllers\PageController@postSave');
-
+		Route::group(['prefix' => 'page'], function () {
+			$c = '\Clixy\Admin\Controllers\PageController';
+			Route::get('/',				$c . '@index');
+			Route::post('page/list',		$c . '@postList');
+			Route::post('page/get',		$c . '@postGet');
+			Route::post('page/create',	$c . '@postCreate');
+			Route::post('page/remove',	$c . '@postRemove');
+			Route::post('page/save',		$c . '@postSave');
+		});
+		
 		// navidation
-		Route::get('navigation',				'\Clixy\Admin\Controllers\NavigationController@index');
-		Route::post('navigation/list',		'\Clixy\Admin\Controllers\NavigationController@postList');
-		Route::post('navigation/get',		'\Clixy\Admin\Controllers\NavigationController@postGet');
-		Route::post('navigation/create',		'\Clixy\Admin\Controllers\NavigationController@postCreate');
-		Route::post('navigation/remove',		'\Clixy\Admin\Controllers\NavigationController@postRemove');
-		Route::post('navigation/save',		'\Clixy\Admin\Controllers\NavigationController@postSave');
-
+		Route::group(['prefix' => 'navigation'], function () {
+			$c = '\Clixy\Admin\Controllers\NavigationController';
+			Route::get('/',			$c . '@index');
+			Route::post('list',		$c . '@postList');
+			Route::post('get',		$c . '@postGet');
+			Route::post('create',	$c . '@postCreate');
+			Route::post('remove',	$c . '@postRemove');
+			Route::post('save',		$c . '@postSave');
+		});
+		
 		// category
-		Route::get('category',          '\Clixy\Admin\Controllers\CategoryController@index');
-		Route::post('category/list',    '\Clixy\Admin\Controllers\CategoryController@postList');
-		Route::post('category/get',     '\Clixy\Admin\Controllers\CategoryController@postGet');
-		Route::post('category/create',  '\Clixy\Admin\Controllers\CategoryController@postCreate');
-		Route::post('category/remove',  '\Clixy\Admin\Controllers\CategoryController@postRemove');
-		Route::post('category/save',    '\Clixy\Admin\Controllers\CategoryController@postSave');
-
+		Route::group(['prefix' => 'category'], function () {
+			$c = '\Clixy\Admin\Controllers\CategoryController';
+			Route::get('/',        $c . '@index');
+			Route::post('list',    $c . '@postList');
+			Route::post('get',     $c . '@postGet');
+			Route::post('create',  $c . '@postCreate');
+			Route::post('remove',  $c . '@postRemove');
+			Route::post('save',    $c . '@postSave');
+		});
+		
 		// item
-		Route::get('item',          '\Clixy\Admin\Controllers\ItemController@index');
-		Route::post('item/list',    '\Clixy\Admin\Controllers\ItemController@postList');
-		Route::post('item/get',     '\Clixy\Admin\Controllers\ItemController@postGet');
-		Route::post('item/create',  '\Clixy\Admin\Controllers\ItemController@postCreate');
-		Route::post('item/remove',  '\Clixy\Admin\Controllers\ItemController@postRemove');
-		Route::post('item/save',    '\Clixy\Admin\Controllers\ItemController@postSave');
+		Route::group(['prefix' => 'item'], function () {
+			$c = '\Clixy\Admin\Controllers\ItemController';
+			Route::get('/',        $c . '@index');
+			Route::post('list',    $c . '@postList');
+			Route::post('get',     $c . '@postGet');
+			Route::post('create',  $c . '@postCreate');
+			Route::post('remove',  $c . '@postRemove');
+			Route::post('save',    $c . '@postSave');
 
-		Route::post('item/date/list',	'\Clixy\Admin\Controllers\ItemController@postDateList');
-		Route::post('item/date/remove',	'\Clixy\Admin\Controllers\ItemController@postDateRemove');
-		Route::post('item/date/create',	'\Clixy\Admin\Controllers\ItemController@postDateCreate');
-
+			Route::post('date/list',	    $c . '@postDateList');
+			Route::post('date/remove',	$c . '@postDateRemove');
+			Route::post('date/create',	$c . '@postDateCreate');
+		});
+		
 		// media
-		Route::post('media/upload',				'\Clixy\Admin\Controllers\MediaController@postUpload');
-		Route::post('media/remove',				'\Clixy\Admin\Controllers\MediaController@postRemove');
-		Route::post('media/getMediaPagination',	'\Clixy\Admin\Controllers\MediaController@postGetMediaPagination');
-		Route::post('media/getMediaDetailList',	'\Clixy\Admin\Controllers\MediaController@postGetMediaDetailList');
-
+		Route::group(['prefix' => 'media'], function () {
+			$c = '\Clixy\Admin\Controllers\MediaController';
+			Route::post('upload',				$c . '@postUpload');
+			Route::post('remove',				$c . '@postRemove');
+			Route::post('getMediaPagination',	$c . '@postGetMediaPagination');
+			Route::post('getMediaDetailList',	$c . '@postGetMediaDetailList');
+		});
+			
 		// news
-		Route::get('news',          '\Clixy\Admin\Controllers\NewsController@index');
-		Route::post('news/list',    '\Clixy\Admin\Controllers\NewsController@postList');
-		Route::post('news/get',     '\Clixy\Admin\Controllers\NewsController@postGet');
-		Route::post('news/create',  '\Clixy\Admin\Controllers\NewsController@postCreate');
-		Route::post('news/remove',  '\Clixy\Admin\Controllers\NewsController@postRemove');
-		Route::post('news/save',    '\Clixy\Admin\Controllers\NewsController@postSave');
-
+		Route::group(['prefix' => 'news'], function () {
+			$c = '\Clixy\Admin\Controllers\NewsController';
+			Route::get('/',        $c . '@index');
+			Route::post('list',    $c . '@postList');
+			Route::post('get',     $c . '@postGet');
+			Route::post('create',  $c . '@postCreate');
+			Route::post('remove',  $c . '@postRemove');
+			Route::post('save',    $c . '@postSave');
+		});
+			
 		/*
 		//color
 		Route::get('color',			'\Clixy\Admin\Controllers\ColorController@index');
@@ -97,29 +124,38 @@ Route::group(['middleware' => ['web']], function () {
 		*/
 
 		// slide
-		Route::get('slide',			'\Clixy\Admin\Controllers\SliderController@index');
-		Route::post('slide/list',	'\Clixy\Admin\Controllers\SliderController@postList');
-		Route::post('slide/get',		'\Clixy\Admin\Controllers\SliderController@postGet');
-		Route::post('slide/create',	'\Clixy\Admin\Controllers\SliderController@postCreate');
-		Route::post('slide/remove',	'\Clixy\Admin\Controllers\SliderController@postRemove');
-		Route::post('slide/save',	'\Clixy\Admin\Controllers\SliderController@postSave');
-
+		Route::group(['prefix' => 'slide'], function () {
+			$c = '\Clixy\Admin\Controllers\SliderController';
+			Route::get('/',			$c . '@index');
+			Route::post('list',	    $c . '@postList');
+			Route::post('get',		$c . '@postGet');
+			Route::post('create',	$c . '@postCreate');
+			Route::post('remove',	$c . '@postRemove');
+			Route::post('save',	    $c . '@postSave');
+		});
+			
 		// newsletter
-		Route::get('newsletter',          '\Clixy\Admin\Controllers\NewsletterController@index');
-		Route::post('newsletter/list',    '\Clixy\Admin\Controllers\NewsletterController@postList');
-		Route::post('newsletter/get',     '\Clixy\Admin\Controllers\NewsletterController@postGet');
-		Route::post('newsletter/create',  '\Clixy\Admin\Controllers\NewsletterController@postCreate');
-		Route::post('newsletter/remove',  '\Clixy\Admin\Controllers\NewsletterController@postRemove');
-		Route::post('newsletter/save',    '\Clixy\Admin\Controllers\NewsletterController@postSave');
-
+		Route::group(['prefix' => 'newsletter'], function () {
+			$c = '\Clixy\Admin\Controllers\NewsletterController';
+			Route::get('/',        $c . '@index');
+			Route::post('list',    $c . '@postList');
+			Route::post('get',     $c . '@postGet');
+			Route::post('create',  $c . '@postCreate');
+			Route::post('remove',  $c . '@postRemove');
+			Route::post('save',    $c . '@postSave');
+		});
+			
 		// newslettersubscribers
-		Route::get('newslettersubscribers',          '\Clixy\Admin\Controllers\NewsletterSubscribersController@index');
-		Route::post('NewsletterSubscribers/list',    '\Clixy\Admin\Controllers\NewsletterSubscribersController@postList');
-		Route::post('NewsletterSubscribers/get',     '\Clixy\Admin\Controllers\NewsletterSubscribersController@postGet');
-		Route::post('NewsletterSubscribers/create',  '\Clixy\Admin\Controllers\NewsletterSubscribersController@postCreate');
-		Route::post('NewsletterSubscribers/remove',  '\Clixy\Admin\Controllers\NewsletterSubscribersController@postRemove');
-		Route::post('NewsletterSubscribers/save',    '\Clixy\Admin\Controllers\NewsletterSubscribersController@postSave');
-
+		Route::group(['prefix' => 'newslettersubscribers'], function () {
+			$c = '\Clixy\Admin\Controllers\NewsletterSubscribersController';
+			Route::get('/',          $c . '@index');
+			Route::post('list',    $c . '@postList');
+			Route::post('get',     $c . '@postGet');
+			Route::post('create',  $c . '@postCreate');
+			Route::post('remove',  $c . '@postRemove');
+			Route::post('save',    $c . '@postSave');
+		});
+			
 	});
 
 });

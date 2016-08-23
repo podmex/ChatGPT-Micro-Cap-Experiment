@@ -18,7 +18,7 @@ function MediaModel() {
     var media_id = false;
     var reorder = 0;
     var list_view = 'thumb';
-    var gate = '/';
+    var gate = Conf.gate;
 
     var msg = {
         deleted: "Media item deleted",
@@ -65,7 +65,7 @@ function MediaModel() {
         }
         self.media_id = id;
         $("#media_detail_hold_" + id).show();
-        $.post('/cms/', {m: 'media', a: 'info', type: 'media', id: id, hide_add: media.hide_add_to_item, hide_actions: media.hide_actions}, function (data) {
+        $.post(gate, {m: 'media', a: 'info', type: 'media', id: id, hide_add: media.hide_add_to_item, hide_actions: media.hide_actions}, function (data) {
             handle.render($('#media_detail_hold_' + id), data);
             $("a#media_info_" + id).css("cursor", "pointer").click(function (e) {
                 e.preventDefault();

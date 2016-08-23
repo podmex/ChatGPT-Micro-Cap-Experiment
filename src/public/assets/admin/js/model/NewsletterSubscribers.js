@@ -1,9 +1,6 @@
-function NavigationModel()
+function NewsletterSubscribersModel()
 {
-    var handle = this;
-    var self = this;
     var token = Conf.token;
-
     var id;
 
     var lang = {
@@ -15,23 +12,18 @@ function NavigationModel()
         }
     };
 
-    var controller = "navigation";
+    var controller = "NewsletterSubscribers";
     
     this.speed = 500;
     this.current_item = '';
     this.edit_hold = $('#' + controller + '_edit_hold');
     this.page = 0;
-    var gate = "/";
+    var gate = Conf.gate;
 
     // public state handler
     var log = function (msg, s) {
-        alert(msg);
+        // alert(msg);
         // state_obj.log(controller + "_out", msg, s);
-    };
-    
-    var cancel = function (e) {
-        $("#" + controller + "-wrap").empty();
-        list();
     };
 
     var tooltip = function (state) {
@@ -47,16 +39,34 @@ function NavigationModel()
             
             $('#' + controller + '-list a[data-action=edit]').on('click', edit);
             $('#' + controller + '-list a[data-action=remove]').on('click', remove);
+            /*
+            $("#slide-list .main_drag_container").unbind('click').sortable({
+                        items: '.main_drag',
+                        handle: '.s_button_move',
+                        axis: 'y',
+                        forcePlaceholderSize: true,
+                        stop: function (event, ui) {
+                            list = $(this).sortable('toArray');
+                            $.post(gate, {m: "slide", a: "ord", list: list.join(',').replace(/slide_item_/gi, '')},
+                            function (o) {
+                                if (o.state) {
+                                    // log(o.msg, 2);
+                                }
+                            }, "json");
+                        }
+            });*/
         }, "json");
+    };
+    
+    var cancel = function (e) {
+        $("#" + controller + "-wrap").empty();
+        list();
     };
 
     var edit = function (e) {
         var id = Number(e.type === "click" ? $(this).attr('data-id') : e);
-        // cleanTinyMCE();
         $.post(gate + controller + '/get', {id: id, _token: token}, function (data) {
             $("#" + controller + "-wrap").html(data.content).foundation();
-            // tinyMCE_obj.add(controller, 6, id);
-            // Tabs.init('normal');
             $("#" + controller + "-edit-form").on('submit', save);
             $("#" + controller + "-edit-form button[data-action=cancel]").on('click', cancel);
         }, "json");
@@ -68,15 +78,14 @@ function NavigationModel()
      * @param {type} e
      * @returns {undefined}
      */
-    var save = function (e)
-    {
+    var save = function (e) {
         e.preventDefault();
         var obj = {_token: token};
         var o = $(this).serializeArray();
         for (var i in o) {
             obj[o[i].name] = o[i].value;
         }
-        $.post(gate + controller + "/save", obj, function (o) {
+        $.post(gate + controller + "/save", obj, function () {
             list();
         }, "json");
     };
@@ -84,10 +93,10 @@ function NavigationModel()
     var remove = function (e) {
         id = Number(e.type === "click" ? $(this).attr('data-id') : e);
         if (confirm(lang.msg.confirm)) {
-            $.post(gate + controller + "/remove", {id: id, a: "remove", m: "slide", _token: token}, function (data) {
+            $.post(gate + controller + "/remove", {id: id, _token: token}, function (data) {
                 token = data.token;
                 if (data.state) {
-                    log(data.msg, 2);
+                    // log(data.msg, 2);
                     list();
                 }
             }, "json");
@@ -95,7 +104,7 @@ function NavigationModel()
     };
 
     var activate = function (id) {
-        $.post(gate + controller + "/activate", {a: "activate", m: "page", id: id}, function (o) {
+        $.post(gate + controller + "/activate", {id: id}, function (o) {
             list();
         }, "json");
     };
@@ -104,15 +113,13 @@ function NavigationModel()
     var deactivate = function (id) {
         if (typeof id === "undefined" || id < 0)
             return;
-        $.post(gate, {a: "deactivate", m: "page", id: id}, function (o) {
+        $.post(gate, {id: id}, function (o) {
             list();
         }, "json");
     };
 
     var add = function (o) {
-        // cleanTinyMCE();
-        // $(".s_module_settings_buttons").hide();
-        $.post(gate + controller + '/create', {a: "create", m: "slide", _token: token}, function (data) {
+        $.post(gate + controller + '/create', {_token: token}, function (data) {
             token = data.token;
             edit(data.id);
         }, "json");
@@ -124,12 +131,10 @@ function NavigationModel()
         });
     };
 
-    /**
-     * init language model, get index list, get list and attach actions
-     * @return void
-     */
-    list();
-
+    $("#" + controller + "list").on("click", list);
     $("a[data-action='create']").on("click", add);
+    
+    list();
 }
-var navigation_obj = new NavigationModel();
+
+var NewsletterSubscribersObj = new NewsletterSubscribersModel();

@@ -6,7 +6,7 @@
 		<p>@lang('clixy/admin::auth.loginTitle')</p>
     </div>
     <div class="large-6 columns">
-		{!! Form::open(['url' => 'login', 'method' => 'post']) !!}
+		{!! Form::open(['url' => "{$prefix}/login", 'method' => 'post']) !!}
             <div class="row">
                 <label>@lang('clixy/admin::auth.username')</label>
 				{!! Form::email('email', old('email'), [

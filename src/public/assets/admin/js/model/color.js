@@ -1,5 +1,7 @@
-function ConfModel()
+function ColorModel()
 {
+    var handle = this;
+    var self = this;
     var token = Conf.token;
 
     var id;
@@ -13,13 +15,13 @@ function ConfModel()
         }
     };
 
-    var controller = "conf";
+    var controller = "color";
     
     this.speed = 500;
     this.current_item = '';
     this.edit_hold = $('#' + controller + '_edit_hold');
     this.page = 0;
-    var gate = "/";
+    var gate = Conf.gate;
 
     // public state handler
     var log = function (msg, s) {
@@ -51,8 +53,7 @@ function ConfModel()
     var edit = function (e) {
         var id = Number(e.type === "click" ? $(this).attr('data-id') : e);
         $.post(gate + controller + '/get', {id: id, _token: token}, function (data) {
-            $("#" + controller + "-wrap").html(data.content);
-            $(document).foundation();
+            $("#" + controller + "-wrap").html(data.content).foundation();
             $("#" + controller + "-edit-form").on('submit', save);
             $("#" + controller + "-edit-form button[data-action=cancel]").on('click', cancel);
         }, "json");
@@ -80,7 +81,7 @@ function ConfModel()
     var remove = function (e) {
         id = Number(e.type === "click" ? $(this).attr('data-id') : e);
         if (confirm(lang.msg.confirm)) {
-            $.post(gate + controller + "/remove", {id: id, _token: token}, function (data) {
+            $.post(gate + controller + "/remove", {id: id, a: "remove", m: "slide", _token: token}, function (data) {
                 token = data.token;
                 if (data.state) {
                     log(data.msg, 2);
@@ -108,7 +109,7 @@ function ConfModel()
     var add = function (o) {
         // cleanTinyMCE();
         // $(".s_module_settings_buttons").hide();
-        $.post(gate + controller + '/create', {_token: token}, function (data) {
+        $.post(gate + controller + '/create', {a: "create", m: "slide", _token: token}, function (data) {
             token = data.token;
             edit(data.id);
         }, "json");
@@ -128,4 +129,4 @@ function ConfModel()
 
     $("a[data-action='create']").on("click", add);
 }
-var conf_obj = new ConfModel();
+var color_obj = new ColorModel();

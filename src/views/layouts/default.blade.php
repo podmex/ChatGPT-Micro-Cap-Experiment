@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		{!! Html::style('bower_components/foundation-icon-fonts/foundation-icons.css') !!}
-		{!! Html::style('assets/css/app.css') !!}
+		{!! Html::style('assets/lib/foundation-icon-fonts/foundation-icons.css') !!}
+		{!! Html::style('assets/admin/css/app.css') !!}
         @yield('refresh')
 	</head>
 	<body>
@@ -15,7 +15,7 @@
 						<ul class="title-area">
 							<li class="name">
 								<h1>
-									<a href="{!! URL::to('/') !!}">
+									<a href="{!! URL::to($prefix) !!}">
 										{{ $name or 'Clixy CMS' }}
 									</a>
 								</h1>
@@ -29,17 +29,17 @@
 						<section class="top-bar-section">
 							<!-- Right Nav Section -->
 							<ul class="right">
-								<li>{!! HTML::link('/', 'Начало') !!}</li>
+								<li>{!! HTML::link('cms', 'Начало') !!}</li>
 								@if (Auth::id())
-									<li>{!! HTML::link('news', 'Новини') !!}</li>
-									<li>{!! HTML::link('slide', 'Слайдър') !!}</li>
-									<li>{!! HTML::link('category', 'Категории') !!}</li>
-									<li>{!! HTML::link('item', 'Продукти') !!}</li>
-									<li>{!! HTML::link('navigation', 'Навигация') !!}</li>
-									<li>{!! HTML::link('page', 'Страници') !!}</li>
-									<li>{!! HTML::link('conf', 'Настройки') !!}</li>
-									<li>{!! HTML::link('user', 'Потребители') !!}</li>
-									<li>{!! HTML::link('logout', 'Изход') !!}</li>
+									<li>{!! HTML::link("{$prefix}/news", 'Новини') !!}</li>
+									<li>{!! HTML::link("{$prefix}/slide", 'Слайдър') !!}</li>
+									<li>{!! HTML::link("{$prefix}/category", 'Категории') !!}</li>
+									<li>{!! HTML::link("{$prefix}/item", 'Продукти') !!}</li>
+									<li>{!! HTML::link("{$prefix}/navigation", 'Навигация') !!}</li>
+									<li>{!! HTML::link("{$prefix}/page", 'Страници') !!}</li>
+									<li>{!! HTML::link("{$prefix}/conf", 'Настройки') !!}</li>
+									<li>{!! HTML::link("{$prefix}/cms/user", 'Потребители') !!}</li>
+									<li>{!! HTML::link("{$prefix}/cms/logout", 'Изход') !!}</li>
 								@endif
 							</ul>
 						</section>
@@ -52,17 +52,18 @@
 		
 		<script type="text/javascript">
 			Conf = {
+				gate: "{{ URL::to('cms') }}/",
 				token: "{{ csrf_token() }}"
 			};
 		</script>
-		{!! Html::script('bower_components/jquery/dist/jquery.min.js') !!}
-		{!! Html::script('bower_components/modernizr-min/dist/modernizr.min.js') !!}
-		{!! Html::script('bower_components/what-input/what-input.min.js') !!}
-		{!! Html::script('bower_components/foundation-sites/dist/foundation.min.js') !!}
-		{!! Html::script('bower_components/ckeditor/ckeditor.js') !!}
-		{!! Html::script('js/app.js') !!}
+		{!! Html::script('assets/lib/jquery/dist/jquery.min.js') !!}
+		{!! Html::script('assets/lib/modernizr-min/dist/modernizr.min.js') !!}
+		{!! Html::script('assets/lib/what-input/what-input.min.js') !!}
+		{!! Html::script('assets/lib/foundation-sites/dist/foundation.min.js') !!}
+		{!! Html::script('assets/lib/ckeditor/ckeditor.js') !!}
+		{!! Html::script('assets/admin/js/app.js') !!}
 		@if (!empty($module))
-			{!! Html::script("js/model/{$module}.js") !!}
+			{!! Html::script("assets/admin/js/model/{$module}.js") !!}
 		@endif
 	</body>
 </html>

@@ -1,6 +1,9 @@
-function CategoryModel()
+function UserModel()
 {
+    var handle = this;
+    var self = this;
     var token = Conf.token;
+
     var id;
 
     var lang = {
@@ -12,14 +15,17 @@ function CategoryModel()
         }
     };
 
-    var controller = "category";
+    var controller = "user";
     
     this.speed = 500;
     this.current_item = '';
     this.edit_hold = $('#' + controller + '_edit_hold');
     this.page = 0;
-    var gate = "/";
-    
+    var id = 0;
+    var busy = false;
+    var gate = Conf.gate;
+    var mode = 'slide';//page,banner
+
     // public state handler
     var log = function (msg, s) {
         alert(msg);
@@ -67,7 +73,6 @@ function CategoryModel()
         var id = Number(e.type === "click" ? $(this).attr('data-id') : e);
         $.post(gate + controller + '/get', {id: id, _token: token}, function (data) {
             $("#" + controller + "-wrap").html(data.content).foundation();
-            CKEDITOR.replaceAll('ckeditor');
             $("#" + controller + "-edit-form").on('submit', save);
             $("#" + controller + "-edit-form button[data-action=cancel]").on('click', cancel);
         }, "json");
@@ -81,7 +86,6 @@ function CategoryModel()
      */
     var save = function (e) {
         e.preventDefault();
-	updateCKEditor();
         var obj = {_token: token};
         var o = $(this).serializeArray();
         for (var i in o) {
@@ -98,7 +102,7 @@ function CategoryModel()
             $.post(gate + controller + "/remove", {id: id, _token: token}, function (data) {
                 token = data.token;
                 if (data.state) {
-                    // log(data.msg, 2);
+                    log(data.msg, 2);
                     list();
                 }
             }, "json");
@@ -157,4 +161,4 @@ function CategoryModel()
     });
     $("#slide_list .s_button_edit").on("click", edit);
 }
-var category_obj = new CategoryModel();
+var user_obj = new UserModel();

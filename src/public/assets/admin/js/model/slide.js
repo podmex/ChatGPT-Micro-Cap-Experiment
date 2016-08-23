@@ -1,9 +1,6 @@
-function PageModel()
+function SlideModel()
 {
-    var handle = this;
-    var self = this;
     var token = Conf.token;
-
     var id;
 
     var lang = {
@@ -15,15 +12,14 @@ function PageModel()
         }
     };
 
-    var controller = "page";
+    var controller = "slide";
     
+	var gate = Conf.gate;
     this.speed = 500;
     this.current_item = '';
     this.edit_hold = $('#' + controller + '_edit_hold');
     this.page = 0;
-    var busy = false;
-    var gate = "/";
-    var mode = 'slide';//page,banner
+    var id = 0;
 
     // public state handler
     var log = function (msg, s) {
@@ -36,7 +32,7 @@ function PageModel()
     };
 
     var list = function () {
-        $.post(gate + controller + '/list', {_token: token}, function (data) {
+        $.post(gate + controller + '/list', {a: "list", m: "slide", _token: token}, function (data) {
             token = data.token;
             
             $('#' + controller + '-list').empty().html(data.content);
@@ -70,14 +66,13 @@ function PageModel()
 
     var edit = function (e) {
         var id = Number(e.type === "click" ? $(this).attr('data-id') : e);
-        $.post(gate + controller + '/get', {id: id, _token: token}, function (data) {
+        $.post(gate + controller + '/get', {id: id, a: "get", m: "slide", _token: token}, function (data) {
             $("#" + controller + "-wrap").html(data.content).foundation();
-			CKEDITOR.replaceAll('ckeditor');
-            // tinyMCE_obj.add(controller, 6, id);
             // Tabs.init('normal');
             $("#" + controller + "-edit-form").on('submit', save);
             $("#" + controller + "-edit-form button[data-action=cancel]").on('click', cancel);
-	}, "json");
+            CKEDITOR.replaceAll('ckeditor');
+        }, "json");
         $("#" + controller + "-menu-wrap").hide();
     };
 
@@ -88,19 +83,21 @@ function PageModel()
      */
     var save = function (e) {
         e.preventDefault();
-	updateCKEditor();
+        updateCKEditor();
         var obj = {_token: token};
         var o = $(this).serializeArray();
         for (var i in o) {
             obj[o[i].name] = o[i].value;
         }
-        $.post(gate + controller + "/save", obj, list, "json");
+        $.post(gate + controller + "/save", obj, function () {
+            list();
+        }, "json");
     };
 
     var remove = function (e) {
         id = Number(e.type === "click" ? $(this).attr('data-id') : e);
         if (confirm(lang.msg.confirm)) {
-            $.post(gate + controller + "/remove", {id: id, _token: token}, function (data) {
+            $.post(gate + controller + "/remove", {id: id, a: "remove", m: "slide", _token: token}, function (data) {
                 token = data.token;
                 if (data.state) {
                     log(data.msg, 2);
@@ -111,7 +108,7 @@ function PageModel()
     };
 
     var activate = function (id) {
-        $.post(gate + controller + "/activate", {id: id}, function (o) {
+        $.post(gate + controller + "/activate", {a: "activate", m: "page", id: id}, function (o) {
             list();
         }, "json");
     };
@@ -120,7 +117,7 @@ function PageModel()
     var deactivate = function (id) {
         if (typeof id === "undefined" || id < 0)
             return;
-        $.post(gate, {id: id}, function (o) {
+        $.post(gate, {a: "deactivate", m: "page", id: id}, function (o) {
             list();
         }, "json");
     };
@@ -128,7 +125,7 @@ function PageModel()
     var add = function (o) {
         // cleanTinyMCE();
         // $(".s_module_settings_buttons").hide();
-        $.post(gate + controller + '/create', {_token: token}, function (data) {
+        $.post(gate + 'slide/create', {a: "create", m: "slide", _token: token}, function (data) {
             token = data.token;
             edit(data.id);
         }, "json");
@@ -147,7 +144,7 @@ function PageModel()
     list();
 
     //live
-    $("#" + controller + "list").on("click", list);
+    $("#slidelist").on("click", list);
     $("a[data-action='create']").on("click", add);
     
     $('#slide_add_cancel').on("click", function () {
@@ -164,4 +161,4 @@ function PageModel()
     });
     $("#slide_list .s_button_edit").on("click", edit);
 }
-var page_obj = new PageModel();
+var slide_obj = new SlideModel();

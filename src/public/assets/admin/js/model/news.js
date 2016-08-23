@@ -1,4 +1,4 @@
-function ColorModel()
+function NewsModel()
 {
     var handle = this;
     var self = this;
@@ -15,23 +15,20 @@ function ColorModel()
         }
     };
 
-    var controller = "color";
+    var controller = "news";
     
     this.speed = 500;
     this.current_item = '';
     this.edit_hold = $('#' + controller + '_edit_hold');
     this.page = 0;
-    var gate = "/";
+    var busy = false;
+    var gate = Conf.gate;
+    var mode = 'slide';//page,banner
 
     // public state handler
     var log = function (msg, s) {
         alert(msg);
         // state_obj.log(controller + "_out", msg, s);
-    };
-    
-    var cancel = function (e) {
-        $("#" + controller + "-wrap").empty();
-        list();
     };
 
     var tooltip = function (state) {
@@ -47,16 +44,40 @@ function ColorModel()
             
             $('#' + controller + '-list a[data-action=edit]').on('click', edit);
             $('#' + controller + '-list a[data-action=remove]').on('click', remove);
+            /*
+            $("#slide-list .main_drag_container").unbind('click').sortable({
+                        items: '.main_drag',
+                        handle: '.s_button_move',
+                        axis: 'y',
+                        forcePlaceholderSize: true,
+                        stop: function (event, ui) {
+                            list = $(this).sortable('toArray');
+                            $.post(gate, {m: "slide", a: "ord", list: list.join(',').replace(/slide_item_/gi, '')},
+                            function (o) {
+                                if (o.state) {
+                                    // log(o.msg, 2);
+                                }
+                            }, "json");
+                        }
+            });*/
         }, "json");
+    };
+    
+    var cancel = function (e) {
+        $("#" + controller + "-wrap").empty();
+        list();
     };
 
     var edit = function (e) {
         var id = Number(e.type === "click" ? $(this).attr('data-id') : e);
         $.post(gate + controller + '/get', {id: id, _token: token}, function (data) {
             $("#" + controller + "-wrap").html(data.content).foundation();
+			CKEDITOR.replaceAll('ckeditor');
+            // tinyMCE_obj.add(controller, 6, id);
+            // Tabs.init('normal');
             $("#" + controller + "-edit-form").on('submit', save);
             $("#" + controller + "-edit-form button[data-action=cancel]").on('click', cancel);
-        }, "json");
+	}, "json");
         $("#" + controller + "-menu-wrap").hide();
     };
 
@@ -65,23 +86,21 @@ function ColorModel()
      * @param {type} e
      * @returns {undefined}
      */
-    var save = function (e)
-    {
+    var save = function (e) {
         e.preventDefault();
+	updateCKEditor();
         var obj = {_token: token};
         var o = $(this).serializeArray();
         for (var i in o) {
             obj[o[i].name] = o[i].value;
         }
-        $.post(gate + controller + "/save", obj, function (o) {
-            list();
-        }, "json");
+        $.post(gate + controller + "/save", obj, list, "json");
     };
 
     var remove = function (e) {
         id = Number(e.type === "click" ? $(this).attr('data-id') : e);
         if (confirm(lang.msg.confirm)) {
-            $.post(gate + controller + "/remove", {id: id, a: "remove", m: "slide", _token: token}, function (data) {
+            $.post(gate + controller + "/remove", {id: id, _token: token}, function (data) {
                 token = data.token;
                 if (data.state) {
                     log(data.msg, 2);
@@ -92,7 +111,7 @@ function ColorModel()
     };
 
     var activate = function (id) {
-        $.post(gate + controller + "/activate", {a: "activate", m: "page", id: id}, function (o) {
+        $.post(gate + controller + "/activate", {id: id}, function (o) {
             list();
         }, "json");
     };
@@ -101,7 +120,7 @@ function ColorModel()
     var deactivate = function (id) {
         if (typeof id === "undefined" || id < 0)
             return;
-        $.post(gate, {a: "deactivate", m: "page", id: id}, function (o) {
+        $.post(gate, {id: id}, function (o) {
             list();
         }, "json");
     };
@@ -109,7 +128,7 @@ function ColorModel()
     var add = function (o) {
         // cleanTinyMCE();
         // $(".s_module_settings_buttons").hide();
-        $.post(gate + controller + '/create', {a: "create", m: "slide", _token: token}, function (data) {
+        $.post(gate + controller + '/create', {_token: token}, function (data) {
             token = data.token;
             edit(data.id);
         }, "json");
@@ -127,6 +146,22 @@ function ColorModel()
      */
     list();
 
+    //live
+    $("#" + controller + "list").on("click", list);
     $("a[data-action='create']").on("click", add);
+    
+    $('#slide_add_cancel').on("click", function () {
+        cleanTinyMCE();
+        $("#slide-list").empty();
+        list();
+    }
+    );
+    $('#slide_edit_cancel, #slide_close').on("click", function () {
+        cleanTinyMCE();
+        $("#slide_wrap").empty();
+        list();
+        $("#slide-menu-wrap").show();
+    });
+    $("#slide_list .s_button_edit").on("click", edit);
 }
-var color_obj = new ColorModel();
+var news_obj = new NewsModel();

@@ -20,25 +20,19 @@ class AdminServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
-		$this->loadTranslationsFrom(__DIR__ . '/../lang', 'clixy/admin');
-		$this->loadViewsFrom(__DIR__ . '/../views', 'clixy/admin');
-		
+		// artisan vendor:publish
 		$this->publishes([
-			//__DIR__ . '/../config.php' => config_path('clixy.admin.php'),
-		], 'config');
-				
-		$this->publishes([
-			__DIR__ . '/../Middleware' => app_path('Http/Middleware'),
-		], 'middleware');
-
-		$this->publishes([
-			__DIR__ . '/../public' => public_path(),
+			__DIR__ . '/../public/assets/admin' => public_path('assets/admin'),
 		], 'public');
 		
-		$this->publishes([
-			//__DIR__ . '/../lang' => resource_path('lang/vendor/clixy/admin'),
-			//__DIR__ . '/../views' => resource_path('views/vendor/clixy/admin'),
-		], 'resouces');
+		// translations
+		$this->loadTranslationsFrom(__DIR__ . '/../lang', 'clixy/admin');
+		
+		// views
+		$this->loadViewsFrom(__DIR__ . '/../views', 'clixy/admin');
+
+		// template global variables
+		$this->app->view->share('prefix', config('clixy.admin.prefix') );
 	}
 
 	/**
@@ -48,20 +42,30 @@ class AdminServiceProvider extends ServiceProvider
 	 */
 	public function register()
 	{
-		require __DIR__ . '/../routes.php';
-		
+
+		// config
 		$this->mergeConfigFrom(__DIR__ . '/../config.php', 'clixy.admin');
 		
-		// laravelcollective/html
-		$this->app->register('Collective\Html\HtmlServiceProvider');
-		$loader = \Illuminate\Foundation\AliasLoader::getInstance();
-		$loader->alias('Form', 'Collective\Html\FormFacade');
-		$loader->alias('Html', 'Collective\Html\HtmlFacade');
+		// middleware
+		$this->app['router']->middleware('auth.admin', '\Clixy\Admin\Middleware\Authenticate');
+		$this->app['router']->middleware('guest.admin', '\Clixy\Admin\Middleware\RedirectIfAuthenticated');
 		
+		//middleware groups
+		$this->app['router']->middlewareGroup('admin',[
+			\Clixy\Admin\Middleware\EncryptCookies::class,
+			\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+			\Illuminate\Session\Middleware\StartSession::class,
+			\Illuminate\View\Middleware\ShareErrorsFromSession::class,
+			\Clixy\Admin\Middleware\VerifyCsrfToken::class,
+		]);
+		
+		// adding admin routes
+		require __DIR__ . '/../routes.php';
+
 		// clixy/core
 		$this->app->register('Clixy\Core\Providers\CoreServiceProvider');
 		
-		// extending controllers
+		// override laravel controllers
 		$this->app->make('Clixy\Admin\Controllers\Auth\AuthController');
 
 		// controllers
