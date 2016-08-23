@@ -38,8 +38,8 @@
 									<li>{!! HTML::link("{$prefix}/navigation", 'Навигация') !!}</li>
 									<li>{!! HTML::link("{$prefix}/page", 'Страници') !!}</li>
 									<li>{!! HTML::link("{$prefix}/conf", 'Настройки') !!}</li>
-									<li>{!! HTML::link("{$prefix}/cms/user", 'Потребители') !!}</li>
-									<li>{!! HTML::link("{$prefix}/cms/logout", 'Изход') !!}</li>
+									<li>{!! HTML::link("{$prefix}/user", 'Потребители') !!}</li>
+									<li>{!! HTML::link("{$prefix}/logout", 'Изход') !!}</li>
 								@endif
 							</ul>
 						</section>
