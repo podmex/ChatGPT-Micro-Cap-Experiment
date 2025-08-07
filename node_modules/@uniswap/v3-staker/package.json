@@ -1,0 +1,74 @@
+{
+  "name": "@uniswap/v3-staker",
+  "description": "Canonical liquidity mining contract for Uniswap V3",
+  "license": "GPL-3.0-or-later",
+  "version": "1.0.0",
+  "homepage": "https://uniswap.org",
+  "keywords": [
+    "uniswap",
+    "liquidity mining",
+    "v3"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Uniswap/uniswap-v3-staker"
+  },
+  "files": [
+    "contracts",
+    "!contracts/test",
+    "artifacts/contracts/**/*.json",
+    "!artifacts/contracts/**/*.dbg.json",
+    "!artifacts/contracts/test/**/*",
+    "!artifacts/contracts/base/**/*"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "3.4.1-solc-0.7-2",
+    "@uniswap/v3-core": "1.0.0",
+    "@uniswap/v3-periphery": "^1.0.1"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-etherscan": "^2.1.1",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@typechain/ethers-v5": "^7.0.0",
+    "@typechain/hardhat": "^2.0.1",
+    "@types/chai": "^4.2.6",
+    "@types/console-log-level": "^1.4.0",
+    "@types/lodash": "^4.14.170",
+    "@types/mocha": "^5.2.7",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "chai": "^4.2.0",
+    "console-log-level": "^1.4.1",
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-unused-imports": "^1.1.1",
+    "ethereum-waffle": "^3.0.2",
+    "ethers": "^5.0.8",
+    "hardhat": "^2.2.0",
+    "hardhat-contract-sizer": "^2.0.3",
+    "lodash": "^4.17.21",
+    "mocha-chai-jest-snapshot": "^1.1.0",
+    "prettier": "^2.2.1",
+    "prettier-check": "^2.0.0",
+    "prettier-plugin-solidity": "^1.0.0-beta.10",
+    "solhint": "^3.2.1",
+    "solhint-plugin-prettier": "^0.0.5",
+    "solidity-coverage": "^0.7.16",
+    "ts-node": "^8.5.4",
+    "typechain": "^5.0.0",
+    "typescript": "^4.3.2"
+  },
+  "scripts": {
+    "compile": "hardhat compile",
+    "lint": "eslint . --ext .ts",
+    "prettier:check": "prettier-check contracts/**/*.sol test/**/*.ts types/*.ts",
+    "size-contracts": "hardhat compile && hardhat size-contracts",
+    "test": "hardhat test",
+    "clear-cache": "rm -rf artifacts/ cache/ typechain/",
+    "coverage": "RUN_COVERAGE=1 hardhat coverage"
+  }
+}
